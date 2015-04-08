@@ -32,6 +32,20 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-http.createServer(app).listen(app.get('port'), function () {
+var serve = http.createServer(app);
+var io = require('socket.io')(serve);
+
+serve.listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
+});
+
+io.on('connection', function (socket) {
+    console.log('a user connected');
+    socket.on('disconnect', function () {
+        console.log('user disconnected');
+    });
+
+    socket.on('chat', function (msg) {
+        socket.broadcast.emit('chat', msg);
+    });
 });
