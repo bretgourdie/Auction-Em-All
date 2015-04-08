@@ -1,0 +1,15 @@
+{
+  "name": "Auction--Em-All",
+  "version": "0.0.0",
+  "description": "Auction 'Em All",
+  "main": "app.js",
+  "author": {
+    "name": "gor-don",
+    "email": ""
+  },
+  "dependencies": {
+    "express": "3.4.4",
+    "jade": "*",
+    "stylus": "*"
+  }
+}
