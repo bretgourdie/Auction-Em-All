@@ -48,4 +48,6 @@ io.on('connection', function (socket) {
     socket.on('chat', function (msg) {
         socket.broadcast.emit('chat', msg);
     });
+
+    /* Place to put more socket events */
 });
