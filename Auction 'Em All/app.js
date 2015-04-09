@@ -52,7 +52,7 @@ io.on('connection', function (socket) {
     /* Place to put more socket events */
 });
 
-var socket = io();
+var socket = require('socket.io-client');
 $('#send-message-btn').click(function () {
     var msg = $('#message-box').val();
     socket.emit('chat', msg);
