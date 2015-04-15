@@ -41,6 +41,7 @@ serve.listen(app.get('port'), function () {
 
 io.on('connection', function (socket) {
     console.log('a user connected');
+
     socket.on('disconnect', function () {
         console.log('user disconnected');
     });
@@ -52,7 +53,7 @@ io.on('connection', function (socket) {
     /* Place to put more socket events */
 });
 
-var socket = require('socket.io-client');
+var socket = require('socket.io')();
 $('#send-message-btn').click(function () {
     var msg = $('#message-box').val();
     socket.emit('chat', msg);
