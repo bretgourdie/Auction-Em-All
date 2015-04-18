@@ -40,14 +40,14 @@ serve.listen(app.get('port'), function () {
 });
 
 io.on('connection', function (socket) {
-    console.log('a user connected');
+    console.log('CONNECTION: a user connected');
 
     socket.on('disconnect', function () {
-        console.log('a user disconnected');
+        console.log('CONNECTION: a user disconnected');
     });
 
     socket.on('chat', function (msg) {
-        console.log("chat: " + msg);
+        console.log("CHAT: " + msg);
         socket.broadcast.emit('chat', msg);
     });
 
