@@ -43,24 +43,13 @@ io.on('connection', function (socket) {
     console.log('a user connected');
 
     socket.on('disconnect', function () {
-        console.log('user disconnected');
+        console.log('a user disconnected');
     });
 
     socket.on('chat', function (msg) {
+        console.log("chat: " + msg);
         socket.broadcast.emit('chat', msg);
     });
 
     /* Place to put more socket events */
-});
-
-var socket = require('socket.io')();
-$('#send-message-btn').click(function () {
-    var msg = $('#message-box').val();
-    socket.emit('chat', msg);
-    $('#messages').append($('<p>').text(msg));
-    $('#message-box').val('');
-    return false;
-});
-socket.on('chat', function (msg) {
-    $('#messages').append($('<p>').text(msg));
 });
