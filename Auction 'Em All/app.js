@@ -41,9 +41,15 @@ serve.listen(app.get('port'), function () {
 
 io.on('connection', function (socket) {
     console.log('CONNECTION: a user connected');
+    
+    socket.on('register', function (username) {
+        console.log('REGISTER: ' + username);
+        socket.broadcast.emit('chat', username + ' has entered the room.');
+    });
 
     socket.on('disconnect', function () {
         console.log('CONNECTION: a user disconnected');
+        socket.broadcast.emit('chat', 'a user has left the room.');
     });
 
     socket.on('chat', function (msg) {
