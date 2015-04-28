@@ -26,8 +26,6 @@ socket.on('chat', function (msg) {
 function handleMessageBox(){
     var msg = $('#message-box').val();
     
-    alert(msg);
-    
     if (msg) {
         var usernameAndMessage = username + ": " + msg;
         socket.emit('chat', usernameAndMessage);

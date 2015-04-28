@@ -9,6 +9,11 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
+var userList = [];
+var biddingTime = false;
+var topBid = 0;
+var topBidUser = "";
+
 var app = express();
 
 // all environments
@@ -42,14 +47,18 @@ serve.listen(app.get('port'), function () {
 io.on('connection', function (socket) {
     console.log('CONNECTION: a user connected');
     
-    socket.on('register', function (username) {
+    socket.on('register', function registerUser(username) {
+        userList[socket.id] = username;
         console.log('REGISTER: ' + username);
         socket.broadcast.emit('chat', username + ' has entered the room.');
+        
     });
 
     socket.on('disconnect', function () {
-        console.log('CONNECTION: a user disconnected');
-        socket.broadcast.emit('chat', 'a user has left the room.');
+        var disconnectedUsername = userList[socket.id];
+        userList.splice(socket.id, 1);
+        console.log('CONNECTION: ' + disconnectedUsername + ' disconnected');
+        socket.broadcast.emit('chat', disconnectedUsername + ' has left the room.');
     });
 
     socket.on('chat', function (msg) {
@@ -57,5 +66,23 @@ io.on('connection', function (socket) {
         socket.broadcast.emit('chat', msg);
     });
 
+    socket.on('startbid', function () {
+        console.log("STARTBID: Text goes here");
+        socket.broadcast.emit('bid', 'Bidding begins in 10 seconds!');
+    });
+
+    socket.on('bid', function (user, bid) {
+        if (biddingTime && bid > topBid) {
+            topBid = bid;
+            topBidUser = user;
+            console.log("BID: " + user + ": " + bid);
+            socket.broadcast.emit(user + " has bid " + bid + "!");
+        }
+        else {
+            socket.emit('Someone bid before you. Try again!');
+        }
+    });
+
     /* Place to put more socket events */
 });
+
