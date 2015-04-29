@@ -67,20 +67,37 @@ io.on('connection', function (socket) {
     });
 
     socket.on('startbid', function () {
-        console.log("STARTBID: Text goes here");
-        socket.broadcast.emit('bid', 'Bidding begins in 10 seconds!');
+        biddingTime = true;
+        console.log("STARTBID: Bidding has started!");
+        socket.broadcast.emit('chat', 'Bidding begins in 10 seconds!');
+        socket.broadcast.emit('startbid');
     });
 
     socket.on('bid', function (user, bid) {
+        console.log("BID: " + user + ": " + bid);
+
         if (biddingTime && bid > topBid) {
             topBid = bid;
             topBidUser = user;
-            console.log("BID: " + user + ": " + bid);
-            socket.broadcast.emit(user + " has bid " + bid + "!");
+            console.log("BID RESULT: " + topBidUser + ": " + topBid);
+            socket.broadcast.emit('bid', topBidUser, topBid, topBidUser + " has bid " + topBid);
+            socket.emit('bid', topBidUser, topBid, "You have bid " + topBid);
         }
-        else {
-            socket.emit('Someone bid before you. Try again!');
+        else if (!biddingTime) {
+            console.log("BID RESULT: " + user + " is trying to bid when it's not bidding time");
+            socket.emit('chat', user + ", it's not time to bid right now!");
         }
+        else if(bid <= topBid){
+            console.log("BID RESULT: " + user + ": not bid enough");
+            socket.emit('chat', 'Someone has already outbid you. Try again!');
+        }
+    });
+
+    socket.on('endbid', function () {
+        biddingTime = false;
+        console.log("ENDBID: Bidding has ended!");
+        socket.broadcast.emit('chat', topBidUser + " has won with a bid of " + topBid + "!");
+        socket.broadcast.emit('endbid');
     });
 
     /* Place to put more socket events */
