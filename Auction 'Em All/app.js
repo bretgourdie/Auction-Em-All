@@ -10,7 +10,7 @@ var http = require('http');
 var path = require('path');
 
 var userList = [];
-var socketUserLookupTable = [];
+var socketToUser = [];
 var priviledgedUsers = [];
 var biddingTime = false;
 var topBid = 0;
@@ -51,7 +51,7 @@ io.on('connection', function (socket) {
     
     socket.on('register', function registerUser(username) {
         userList.push(username);
-        socketUserLookupTable[socket.id] = username;
+        socketToUser[socket.id] = username;
         console.log('REGISTER: ' + username);
         console.log('USERLIST: ' + userList);
         socket.broadcast.emit('chat', username + ' has entered the room.');
@@ -59,8 +59,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('disconnect', function () {
-        var disconnectedUsername = socketUserLookupTable[socket.id];
-        socketUserLookupTable.splice(socket.id, 1);
+        var disconnectedUsername = socketToUser[socket.id];
+        socketToUser.splice(socket.id, 1);
         userList.splice(userList.indexOf(disconnectedUsername), 1);
         console.log('CONNECTION: ' + disconnectedUsername + ' disconnected');
         console.log('USERLIST: ' + userList);
@@ -69,14 +69,14 @@ io.on('connection', function (socket) {
 
     socket.on('chat', function (msg) {
         console.log("CHAT: " + msg);
-        socket.broadcast.emit('chat', msg);
+        io.sockets.emit('chat', msg);
     });
 
     socket.on('startbid', function () {
         biddingTime = true;
         console.log("STARTBID: Bidding has started!");
-        socket.broadcast.emit('chat', 'Bidding begins in 10 seconds!');
-        socket.broadcast.emit('startbid');
+        io.sockets.emit('chat', 'Bidding begins in 10 seconds!');
+        io.sockets.emit('startbid');
     });
 
     socket.on('bid', function (user, bid) {
@@ -86,8 +86,7 @@ io.on('connection', function (socket) {
             topBid = bid;
             topBidUser = user;
             console.log("BID RESULT: " + topBidUser + ": " + topBid);
-            socket.broadcast.emit('bid', topBidUser, topBid, topBidUser + " has bid " + topBid);
-            socket.emit('bid', topBidUser, topBid, "You have bid " + topBid);
+            io.sockets.emit('bid', topBidUser, topBid);
         }
         else if (!biddingTime) {
             console.log("BID RESULT: " + user + " is trying to bid when it's not bidding time");
@@ -101,9 +100,8 @@ io.on('connection', function (socket) {
 
     socket.on('endbid', function () {
         biddingTime = false;
-        console.log("ENDBID: Bidding has ended!");
-        socket.broadcast.emit('chat', topBidUser + " has won with a bid of " + topBid + "!");
-        socket.broadcast.emit('endbid', topBidUser, topBid);
+        console.log("ENDBID: " + socketToUser[socket.id] + " saying bidding has ended");
+        io.sockets.emit("endbid", topBidUser, topBid);
     });
 
     /* Place to put more socket events */

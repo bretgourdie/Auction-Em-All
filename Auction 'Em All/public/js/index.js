@@ -32,16 +32,26 @@ else {
         addChat(msg);
     });
     
-    socket.on('bid', function (topBidUser, topBid, msg) {
-        addChat(msg);
+    socket.on('bid', function (topBidUser, topBid) {
+        if (username == topBidUser) {
+            addChat('You have bid ' + topBid + "!");
+        }
+        else {
+            addChat(topBidUser + " has bid " + topBid + "!");
+        }
     });
     
-    socket.on('bidstart', function (msg) {
+    socket.on('startbid', function () {
         addChat('10-second timer countdown starts here.');
     });
     
-    socket.on('bidend', function (topBidUser, topBid) {
-        addChat()
+    socket.on('endbid', function (topBidUser, topBid) {
+        if (username == topBidUser) {
+            addchat("You won with your bid of " + topBid.toString() + "!");
+        }
+        else {
+            addchat(topBidUser + " has won with a bid of " + topBid.toString() + "!")
+        }
     });
 }
 
@@ -71,7 +81,6 @@ function handleMessageBox(){
         else {
             var usernameAndMessage = username + ": " + msg;
             socket.emit('chat', usernameAndMessage);
-            $('#messages').append($('<p>').text(usernameAndMessage));
         }
         
         $('#message-box').val('');
