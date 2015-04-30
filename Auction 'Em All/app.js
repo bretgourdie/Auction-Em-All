@@ -10,6 +10,8 @@ var http = require('http');
 var path = require('path');
 
 var userList = [];
+var socketUserLookupTable = [];
+var priviledgedUsers = [];
 var biddingTime = false;
 var topBid = 0;
 var topBidUser = "";
@@ -48,16 +50,20 @@ io.on('connection', function (socket) {
     console.log('CONNECTION: a user connected');
     
     socket.on('register', function registerUser(username) {
-        userList[socket.id] = username;
+        userList.push(username);
+        socketUserLookupTable[socket.id] = username;
         console.log('REGISTER: ' + username);
+        console.log('USERLIST: ' + userList);
         socket.broadcast.emit('chat', username + ' has entered the room.');
         
     });
 
     socket.on('disconnect', function () {
-        var disconnectedUsername = userList[socket.id];
-        userList.splice(socket.id, 1);
+        var disconnectedUsername = socketUserLookupTable[socket.id];
+        socketUserLookupTable.splice(socket.id, 1);
+        userList.splice(userList.indexOf(disconnectedUsername), 1);
         console.log('CONNECTION: ' + disconnectedUsername + ' disconnected');
+        console.log('USERLIST: ' + userList);
         socket.broadcast.emit('chat', disconnectedUsername + ' has left the room.');
     });
 
@@ -97,7 +103,7 @@ io.on('connection', function (socket) {
         biddingTime = false;
         console.log("ENDBID: Bidding has ended!");
         socket.broadcast.emit('chat', topBidUser + " has won with a bid of " + topBid + "!");
-        socket.broadcast.emit('endbid');
+        socket.broadcast.emit('endbid', topBidUser, topBid);
     });
 
     /* Place to put more socket events */

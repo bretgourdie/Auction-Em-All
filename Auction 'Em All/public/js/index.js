@@ -1,33 +1,54 @@
-﻿var username = null
+﻿var username;
 
-while (!username) {
-    username = prompt("Please enter a user name.");
+username = prompt("Please enter a user name.");
+
+if (username == null || username == '') {
+    $('#titleheader').text("Reload the page and enter a name this time!");
 }
 
-var socket = io();
+else {
+    var socket = io();
+    
+    socket.emit('register', username);
+    
+    $('#titleheader').append(', ' + username + '!');
+    
+    // Hitting enter key
+    $(document).keypress(function (e) {
+        var enterKey = 13;
 
-socket.emit('register', username);
-
-// Hitting enter key
-$(document).keypress(function (e) {
-    if (e.which == 13) { //enter key
+        if (e.which == enterKey 
+            && $('#message-box').is(':focus')) {
+            handleMessageBox();
+        }
+    });
+    // Clicking "Send" Button
+    $('#send-message-btn').click(function () {
         handleMessageBox();
-    }
-});
-// Clicking "Send" Button
-$('#send-message-btn').click(handleMessageBox());
+    });
+    
+    // Receiving chat
+    socket.on('chat', function (msg) {
+        addChat(msg);
+    });
+    
+    socket.on('bid', function (topBidUser, topBid, msg) {
+        addChat(msg);
+    });
+    
+    socket.on('bidstart', function (msg) {
+        addChat('10-second timer countdown starts here.');
+    });
+    
+    socket.on('bidend', function (topBidUser, topBid) {
+        addChat()
+    });
+}
 
-// Receiving chat
-socket.on('chat', function (msg) {
-    addChat(msg);
-});
-
-socket.on('bid', function (topBidUser, topBid, msg) {
-    addChat(msg);
-});
 
 // Determine if message is going to be sent, then send it through 'chat'
 function handleMessageBox(){
+
     var msg = $('#message-box').val();
     
     if (msg) {
@@ -54,6 +75,7 @@ function handleMessageBox(){
         }
         
         $('#message-box').val('');
+        $('#message-box').focus();
     }
 
     return false;
