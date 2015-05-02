@@ -63,7 +63,7 @@ function handleMessageBox(){
     if (msg) {
         // analyze message
         
-        if (msg.lastIndexOf("/bidstart") == 0) {
+        if (msg.lastIndexOf("/bidstart") == 0 || msg.lastIndexOf("/DARIUS") == 0) {
             socket.emit('bidstart');
         }
 

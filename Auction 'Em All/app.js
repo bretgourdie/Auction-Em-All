@@ -103,6 +103,8 @@ io.on('connection', function (socket) {
     socket.on('bidend', function () {
         biddingTime = false;
         console.log("BIDEND: " + socketToUser[socket.id] + " saying bidding has ended");
+        console.log("BIDRESULT: " + topBidUser + " won with bid of " + topBid);
+
         if (topBid == 0) {
             io.sockets.emit("chat", "Nobody bid this round! This guy is crap!");
         }
