@@ -72,11 +72,13 @@ io.on('connection', function (socket) {
         io.sockets.emit('chat', msg);
     });
 
-    socket.on('startbid', function () {
+    socket.on('bidstart', function () {
         biddingTime = true;
-        console.log("STARTBID: Bidding has started!");
+        topBidUser = "Nobody";
+        topBid = 0;
+        console.log("BIDSTART: " + socketToUser[socket.id] + " is starting the bidding!");
         io.sockets.emit('chat', 'Bidding begins in 10 seconds!');
-        io.sockets.emit('startbid');
+        io.sockets.emit('bidstart');
     });
 
     socket.on('bid', function (user, bid) {
@@ -98,10 +100,17 @@ io.on('connection', function (socket) {
         }
     });
 
-    socket.on('endbid', function () {
+    socket.on('bidend', function () {
         biddingTime = false;
-        console.log("ENDBID: " + socketToUser[socket.id] + " saying bidding has ended");
-        io.sockets.emit("endbid", topBidUser, topBid);
+        console.log("BIDEND: " + socketToUser[socket.id] + " saying bidding has ended");
+        if (topBid == 0) {
+            io.sockets.emit("chat", "Nobody bid this round! This guy is crap!");
+        }
+        
+        else {
+            io.sockets.emit('chat', topBidUser + " won with their bid of " + topBid + "!");
+        }
+        io.sockets.emit("bidend", topBidUser);
     });
 
     /* Place to put more socket events */

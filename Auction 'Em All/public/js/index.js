@@ -41,17 +41,16 @@ else {
         }
     });
     
-    socket.on('startbid', function () {
+    socket.on('bidstart', function () {
         addChat('10-second timer countdown starts here.');
     });
     
-    socket.on('endbid', function (topBidUser, topBid) {
+    socket.on('bidend', function (topBidUser) {
         if (username == topBidUser) {
-            addchat("You won with your bid of " + topBid.toString() + "!");
+            addChat("You won the bid!");
         }
-        else {
-            addchat(topBidUser + " has won with a bid of " + topBid.toString() + "!")
-        }
+
+        addChat("Stop the timer here.");
     });
 }
 
@@ -64,18 +63,18 @@ function handleMessageBox(){
     if (msg) {
         // analyze message
         
-        if (msg.lastIndexOf("/bid") == 0) {
-            var bid = 1337;
-            socket.emit('bid', username, bid);
-        }
-
-        else if (msg.lastIndexOf("/startbid") == 0) {
-            socket.emit('startbid');
+        if (msg.lastIndexOf("/bidstart") == 0) {
+            socket.emit('bidstart');
         }
 
         // Kludge, take out when timer is working
-        else if (msg.lastIndexOf("/endbid") == 0) {
-            socket.emit('endbid');
+        else if (msg.lastIndexOf("/bidend") == 0) {
+            socket.emit('bidend');
+        }
+
+        else if (msg.lastIndexOf("/bid") == 0) {
+            var bid = 1337;
+            socket.emit('bid', username, bid);
         }
 
         else {
