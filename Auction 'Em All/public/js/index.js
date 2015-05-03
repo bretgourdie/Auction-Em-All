@@ -27,17 +27,33 @@ else {
         handleMessageBox();
     });
     
-    // Receiving chat
-    socket.on('chat', function (msg) {
-        addChat(msg);
+    // Connections
+    socket.on('register', function (username, userList) {
+        $("#user-list").text(userList.toString().replace(",", ", "));
+        addChat(username, " has joined the room");
     });
     
+    socket.on('disconnect', function (username, userList) {
+        $("#user-list").text(userList.toString().replace(",", ", "));
+        addChat(username, " has left the room.");
+    });
+
+    // Receiving chat
+    socket.on('chat', function (bold, nonbold) {
+        addChat(bold, nonbold);
+    });
+    
+    /*socket.on("chat", function (msg) {
+        addChat(msg);
+    });*/
+    
+    // Bidding events
     socket.on('bid', function (topBidUser, topBid) {
         if (username == topBidUser) {
-            addChat('You have bid ' + topBid + "!");
+            addChat("You", " have bid " + topBid + "!");
         }
         else {
-            addChat(topBidUser + " has bid " + topBid + "!");
+            addChat(topBidUser, " has bid " + topBid + "!");
         }
     });
     
@@ -78,8 +94,7 @@ function handleMessageBox(){
         }
 
         else {
-            var usernameAndMessage = username + ": " + msg;
-            socket.emit('chat', usernameAndMessage);
+            socket.emit('chat', username, ": " + msg);
         }
         
         $('#message-box').val('');
@@ -89,6 +104,6 @@ function handleMessageBox(){
     return false;
 }
 
-function addChat(msg){
-    $('#messages').append($('<p>').text(msg));
+function addChat(boldPart, regularMsg){
+    $('#messages').append($('<b>').text(boldPart)).append(regularMsg).append($("<p>"));
 }

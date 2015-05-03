@@ -43,18 +43,19 @@ var serve = http.createServer(app);
 var io = require('socket.io')(serve);
 
 serve.listen(app.get('port'), function () {
-    console.log('Express server listening on port ' + app.get('port'));
+    console.log("Express server listening on port " + app.get("port"));
 });
 
-io.on('connection', function (socket) {
-    console.log('CONNECTION: a user connected');
+io.on("connection", function (socket) {
+    console.log("CONNECTION: a user connected");
     
-    socket.on('register', function registerUser(username) {
+    socket.on("register", function registerUser(username) {
         userList.push(username);
         socketToUser[socket.id] = username;
-        console.log('REGISTER: ' + username);
-        console.log('USERLIST: ' + userList);
-        socket.broadcast.emit('chat', username + ' has entered the room.');
+        console.log("REGISTER: " + username);
+        console.log("USERLIST: " + userList);
+        io.sockets.emit("register", username, userList);
+        //socket.broadcast.emit('chat', username + ' has entered the room.');
         
     });
 
@@ -62,14 +63,14 @@ io.on('connection', function (socket) {
         var disconnectedUsername = socketToUser[socket.id];
         socketToUser.splice(socket.id, 1);
         userList.splice(userList.indexOf(disconnectedUsername), 1);
-        console.log('CONNECTION: ' + disconnectedUsername + ' disconnected');
-        console.log('USERLIST: ' + userList);
-        socket.broadcast.emit('chat', disconnectedUsername + ' has left the room.');
+        console.log("CONNECTION: " + disconnectedUsername + " disconnected");
+        console.log("USERLIST: " + userList);
+        socket.broadcast.emit("chat", disconnectedUsername + " has left the room.");
     });
 
-    socket.on('chat', function (msg) {
-        console.log("CHAT: " + msg);
-        io.sockets.emit('chat', msg);
+    socket.on('chat', function (bold, nonbold) {
+        console.log("CHAT: " + bold + ": " + nonbold);
+        io.sockets.emit("chat", bold, nonbold);
     });
 
     socket.on('bidstart', function () {
@@ -77,8 +78,8 @@ io.on('connection', function (socket) {
         topBidUser = "Nobody";
         topBid = 0;
         console.log("BIDSTART: " + socketToUser[socket.id] + " is starting the bidding!");
-        io.sockets.emit('chat', 'Bidding begins in 10 seconds!');
-        io.sockets.emit('bidstart');
+        io.sockets.emit("chat", "Bidding begins in 10 seconds!", "");
+        io.sockets.emit("bidstart");
     });
 
     socket.on('bid', function (user, bid) {
@@ -92,11 +93,11 @@ io.on('connection', function (socket) {
         }
         else if (!biddingTime) {
             console.log("BID RESULT: " + user + " is trying to bid when it's not bidding time");
-            socket.emit('chat', user + ", it's not time to bid right now!");
+            socket.emit("chat", user + ", it's not time to bid right now!", "");
         }
         else if(bid <= topBid){
             console.log("BID RESULT: " + user + ": not bid enough");
-            socket.emit('chat', 'Someone has already outbid you. Try again!');
+            socket.emit("chat", "Someone has already outbid you. Try again!", "");
         }
     });
 
@@ -106,11 +107,11 @@ io.on('connection', function (socket) {
         console.log("BIDRESULT: " + topBidUser + " won with bid of " + topBid);
 
         if (topBid == 0) {
-            io.sockets.emit("chat", "Nobody bid this round! This guy is crap!");
+            io.sockets.emit("chat", "Nobody bid this round! This guy is crap!", "");
         }
         
         else {
-            io.sockets.emit('chat', topBidUser + " won with their bid of " + topBid + "!");
+            io.sockets.emit('chat', topBidUser + " won with their bid of " + topBid + "!", "");
         }
         io.sockets.emit("bidend", topBidUser);
     });
