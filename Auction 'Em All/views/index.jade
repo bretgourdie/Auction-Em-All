@@ -7,7 +7,7 @@ block content
 
         
         .row
-            p
+            .col-xs-8.col-sm9
                 b In Room:
                     #user-list
         
@@ -16,7 +16,14 @@ block content
         div#bid-div(hidden)
           .row
             .col-xs-8.col-sm9
-              p#currently-bidding-on Currently Bidding On:
+              b Currently Bidding On:
+            .col-xs-8.col-sm9
+              p#currently-bidding-on Gor-Don
+          .row
+            .col-xs-8.col-sm9
+              b#bid-timer-message Waiting for next round...
+            .col-xs-8.col-sm9
+              p#bid-timer 0:10
             .col-xs-4.col-sm9
               button#bid-button.btn.btn-primary.btn-lg.btn-block Bid
 
