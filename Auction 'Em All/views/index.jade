@@ -5,20 +5,25 @@ block content
     .container-fluid
         h1#titleheader Welcome to Auction 'Em All
 
-        
-        .row
+        div#room-div
+          .row
             .col-xs-8.col-sm9
-                b In Room:
-                    #user-list
+              b In Room:
+            .col-xs-8.col-sm9
+              #user-list
         
-        div#my-team-div
-          h5#my-team Team: None
+        div#team-div
+          .row
+            .col-xs-8.col-sm9
+              b Team:
+            .col-xs-8.col-sm9
+              #my-team None
         div#bid-div(hidden)
           .row
             .col-xs-8.col-sm9
-              b Currently Bidding On:
+              b#bid-message Waiting to bid on:
             .col-xs-8.col-sm9
-              p#currently-bidding-on Gor-Don
+              p#bidding-on Gor-Don
           .row
             .col-xs-8.col-sm9
               b#bid-timer-message Waiting for next round...
