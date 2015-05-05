@@ -4,6 +4,7 @@
  */
 
 var express = require('express');
+var fs = require("fs");
 var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
@@ -15,6 +16,7 @@ var priviledgedUsers = [];
 var biddingTime = false;
 var topBid = 0;
 var topBidUser = "";
+var draftAndMinBid = [];
 
 var app = express();
 
@@ -38,6 +40,12 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+
+var data = fs.readFileSync("./draft/ListOfPokes.csv", "ascii");
+
+console.log("DATARESULT:\n\n" + data + "\n\nDATAEND\n");
+
+draftAndMinBid = data.split("\r\n");
 
 var serve = http.createServer(app);
 var io = require('socket.io')(serve);
