@@ -66,9 +66,17 @@ else {
         addChat("10-second timer countdown starts here.");
     });
     
-    socket.on("bidend", function (topBidUser) {
+    socket.on("bidend", function (topBidUser, biddedThing) {
         if (username == topBidUser) {
-            addChat("You won the bid!", "");
+            var curTeam = $("#my-team").text();
+
+            if (curTeam == "None") {
+                $("#my-team").text(biddedThing);
+            }
+
+            else {
+                $("#my-team").append(", " + biddedThing);
+            }
         }
 
         addChat("Stop the timer here.", "");

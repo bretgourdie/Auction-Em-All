@@ -16,6 +16,7 @@ var priviledgedUsers = [];
 var biddingTime = false;
 var topBid = 0;
 var topBidUser = "";
+var currentDrafter = "";
 var draftAndMinBid = [];
 var promotePassword = "badminmike";
 
@@ -124,7 +125,7 @@ io.on("connection", function (socket) {
         else {
             io.sockets.emit('chat', topBidUser + " won with their bid of " + topBid + "!", "");
         }
-        io.sockets.emit("bidend", topBidUser);
+        io.sockets.emit("bidend", topBidUser, currentDrafter);
     });
 
     socket.on("promote", function (password) {
