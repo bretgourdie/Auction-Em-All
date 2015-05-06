@@ -1,5 +1,6 @@
 ﻿var username;
 var currentTeam = [];
+var admin = false;
 
 username = prompt("Please enter a user name.");
 
@@ -71,6 +72,24 @@ else {
 
         addChat("Stop the timer here.", "");
     });
+    
+    socket.on("admin", function (msg) {
+        if (admin) {
+            addChat("Admin Note: ", msg);
+        }
+    });
+
+    socket.on("promote", function (result) {
+        if (!admin && result) {
+            admin = true;
+            addChat("Admin status granted!", "");
+        }
+
+        else if (!result) {
+            addChat("You are not authorized for that function...", "");
+        }
+        
+    });
 }
 
 
@@ -93,6 +112,12 @@ function handleMessageBox(){
 
         else if (msg.lastIndexOf("/bid") == 0) {
             handleBid();
+        }
+
+        else if (msg.lastIndexOf("/promote") == 0) {
+            var splitMsg = msg.split(" ");
+            var password = splitMsg[1];
+            socket.emit("promote", password);            
         }
 
         else {

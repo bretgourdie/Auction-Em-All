@@ -17,6 +17,7 @@ var biddingTime = false;
 var topBid = 0;
 var topBidUser = "";
 var draftAndMinBid = [];
+var promotePassword = "badminmike";
 
 var app = express();
 
@@ -44,6 +45,8 @@ app.get('/users', user.list);
 var data = fs.readFileSync("./draft/ListOfPokes.csv", "ascii");
 
 console.log("DATARESULT:\n\n" + data + "\n\nDATAEND\n");
+
+fs = null;
 
 draftAndMinBid = data.split("\r\n");
 
@@ -115,7 +118,7 @@ io.on("connection", function (socket) {
         console.log("BIDRESULT: " + topBidUser + " won with bid of " + topBid);
 
         if (topBid == 0) {
-            io.sockets.emit("chat", "Nobody bid this round! This guy is crap!", "");
+            io.sockets.emit("chat", "Nobody", " bid this round! This guy is crap!");
         }
         
         else {
@@ -124,6 +127,16 @@ io.on("connection", function (socket) {
         io.sockets.emit("bidend", topBidUser);
     });
 
-    /* Place to put more socket events */
+    socket.on("promote", function (password) {
+        if (password == promotePassword) {
+            console.log("PROMOTE: promoting " + socketToUser[socket.id]);
+        }
+        
+        else {
+            console.log("PROMOTE: " + socketToUser[socket.id] + " failed promotion with password \"" + password + "\"");
+        }
+        
+        socket.emit("promote", password == promotePassword);
+    });
 });
 
