@@ -37,12 +37,12 @@ else {
     
     // Connections
     socket.on('register', function (username, userList) {
-        $("#user-list").text(userList.toString().replace(/,/g, ", "));
+        $("#user-list").text(userList.join(", "));
         addChat(username, " has joined the room");
     });
     
     socket.on('disconnect', function (username, userList) {
-        $("#user-list").text(userList.toString().replace(/,/g, ", "));
+        $("#user-list").text(userList.join(", "));
         addChat(username, " has left the room.");
     });
 
