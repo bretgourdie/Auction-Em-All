@@ -2,6 +2,7 @@
 var currentTeam = [];
 var admin = false;
 var points = 0;
+var myTeam = [];
 
 username = prompt("Please enter a user name.");
 
@@ -41,9 +42,8 @@ else {
         addChat(username, " has joined the room");
     });
     
-    socket.on('disconnect', function (username, userList) {
+    socket.on("getUserList", function (userList) {
         $("#user-list").text(userList.join(", "));
-        addChat(username, " has left the room.");
     });
 
     // Receiving chat
@@ -68,20 +68,16 @@ else {
     
     socket.on("bidend", function (topBidUser, biddedThing) {
         if (username == topBidUser) {
-            var curTeam = $("#my-team").text();
-
-            if (curTeam == "None") {
-                $("#my-team").text(biddedThing);
-            }
-
-            else {
-                $("#my-team").append(", " + biddedThing);
-            }
+            
+            myTeam.push(biddedThing);
+            
+            updateTeam(myTeam);
         }
 
         addChat("Stop the timer here.", "");
     });
     
+    // Privileged Events
     socket.on("admin", function (msg) {
         if (admin) {
             addChat("Admin Note: ", msg);
@@ -107,6 +103,44 @@ else {
             updatePoints(points);
             addChat("Bidding points set to " + numPoints + "!");
             socket.emit("admin", "Confirmed setting " + username + "'s points to " + numPoints);
+        }
+    });
+
+    socket.on("setlastmember", function (userToSet, teammate) {
+        
+        console.log(userToSet + ": " + teammate);
+
+        if (username == userToSet) {
+            
+            console.log("we are that user!");
+            
+            console.log("raw myTeam = " + myTeam);
+            
+            // take away last teammate
+            if (teammate == null || teammate == "") {
+                console.log("taking away last teammate");
+
+                if (myTeam.length == 0) {
+                    // No team to pop
+                    addChat("Some idiot admin", " is trying to mess with your nonexistent team.");
+                    socket.emit("admin", userToSet + " has no team!");
+                }
+
+                else {
+                    var poppedTeammate = myTeam.pop();
+                    addChat("Admins took away your " + poppedTeammate + "...", "");
+                    socket.emit("admin", userToSet + " lost " + poppedTeammate);
+                }
+            }
+
+            // give whatever teammate was supplied
+            else {
+                myTeam.push(teammate);
+                addChat("Admins granted you " + teammate + "!", "");
+                socket.emit("admin", userToSet + " gained " + teammate);
+            }
+
+            updateTeam(myTeam);
         }
     });
 }
@@ -161,6 +195,20 @@ function handleMessageBox(){
             
         }
 
+        else if (msg.lastIndexOf("/setlastmember") == 0) {
+            if (admin) {
+                var splitMsg = msg.split(" ");
+                var userToSet = splitMsg[1];
+                var teammate = splitMsg[2];
+
+                socket.emit("setlastmember", userToSet, teammate);
+            }
+
+            else {
+                sayNotAuth();
+            }
+        }
+
         else {
             socket.emit("chat", username, ": " + msg);
         }
@@ -187,4 +235,8 @@ function sayNotAuth(){
 
 function updatePoints(numPoints){
     $("#num-points").text(numPoints);
+}
+
+function updateTeam(newTeam){
+    $("#my-team").text(newTeam.join(", "));
 }

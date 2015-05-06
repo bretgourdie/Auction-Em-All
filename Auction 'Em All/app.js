@@ -67,7 +67,6 @@ io.on("connection", function (socket) {
         console.log("REGISTER: " + username);
         console.log("USERLIST: " + userList);
         io.sockets.emit("register", username, userList);
-        //socket.broadcast.emit('chat', username + ' has entered the room.');
         
     });
 
@@ -76,8 +75,9 @@ io.on("connection", function (socket) {
         socketToUser.splice(socket.id, 1);
         userList.splice(userList.indexOf(disconnectedUsername), 1);
         console.log("CONNECTION: " + disconnectedUsername + " disconnected");
-        console.log("USERLIST: " + userList);
         socket.broadcast.emit("chat", disconnectedUsername + " has left the room.");
+        console.log("USERLIST: sending \"" + userList + "\"");
+        socket.broadcast.emit("getUserList", userList);
     });
 
     socket.on('chat', function (bold, nonbold) {
@@ -147,6 +147,11 @@ io.on("connection", function (socket) {
     socket.on("setpoints", function (userToGive, numPoints) {
         console.log("SETPOINTS: giving " + userToGive + " " + numPoints + " points");
         io.sockets.emit("setpoints", userToGive, numPoints);
+    });
+
+    socket.on("setlastmember", function (userToSet, teammate) {
+        console.log("SETLASTMEMBER: setting " + userToSet + "'s last guy to " + teammate);
+        io.sockets.emit("setlastmember", userToSet, teammate);
     });
 });
 
