@@ -138,5 +138,14 @@ io.on("connection", function (socket) {
         
         socket.emit("promote", password == promotePassword);
     });
+    
+    socket.on("admin", function (msg) {
+        io.sockets.emit("admin", msg);
+    });
+
+    socket.on("setpoints", function (userToGive, numPoints) {
+        console.log("SETPOINTS: giving " + userToGive + " " + numPoints + " points");
+        io.sockets.emit("setpoints", userToGive, numPoints);
+    });
 });
 

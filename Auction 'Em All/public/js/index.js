@@ -86,9 +86,17 @@ else {
         }
 
         else if (!result) {
-            addChat("You are not authorized for that function...", "");
+            sayNotAuth();
         }
         
+    });
+
+    socket.on("setpoints", function (userToGive, numPoints) {
+        
+        if (username == userToGive) {
+            addChat("Bidding points set to " + numPoints + "!");
+            socket.emit("admin", "Confirmed setting " + username + "'s points to " + numPoints);
+        }
     });
 }
 
@@ -120,6 +128,28 @@ function handleMessageBox(){
             socket.emit("promote", password);            
         }
 
+        else if (msg.lastIndexOf("/setpoints") == 0) {
+            if (admin) {
+                var splitMsg = msg.split(" ");
+                var userToGive = splitMsg[1];
+                var numPoints = splitMsg[2];
+                
+                if (!isNaN(numPoints)) {
+
+                    socket.emit("setpoints", userToGive, numPoints);
+                }
+
+                else {
+                    addChat("Admin Note: ", "\"" + numPoints + "\" is not a number!");
+                }
+            }
+
+            else {
+                sayNotAuth();
+            }
+            
+        }
+
         else {
             socket.emit("chat", username, ": " + msg);
         }
@@ -138,4 +168,8 @@ function handleBid(){
 
 function addChat(boldPart, regularMsg){
     $("#messages").append($("<b>").text(boldPart)).append(regularMsg).append($("<p>"));
+}
+
+function sayNotAuth(){
+    addChat("You are not authorized for that function...", "");
 }
