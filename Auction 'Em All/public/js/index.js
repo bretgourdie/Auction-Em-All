@@ -1,6 +1,7 @@
 ﻿var username;
 var currentTeam = [];
 var admin = false;
+var points = 0;
 
 username = prompt("Please enter a user name.");
 
@@ -94,6 +95,8 @@ else {
     socket.on("setpoints", function (userToGive, numPoints) {
         
         if (username == userToGive) {
+            points = numPoints;
+            updatePoints(points);
             addChat("Bidding points set to " + numPoints + "!");
             socket.emit("admin", "Confirmed setting " + username + "'s points to " + numPoints);
         }
@@ -172,4 +175,8 @@ function addChat(boldPart, regularMsg){
 
 function sayNotAuth(){
     addChat("You are not authorized for that function...", "");
+}
+
+function updatePoints(numPoints){
+    $("#num-points").text(numPoints);
 }
