@@ -124,18 +124,11 @@ else {
     });
 
     socket.on("setlastmember", function (userToSet, teammate) {
-        
-        console.log(userToSet + ": " + teammate);
 
         if (username == userToSet) {
             
-            console.log("we are that user!");
-            
-            console.log("raw myTeam = " + myTeam);
-            
             // take away last teammate
             if (teammate == null || teammate == "") {
-                console.log("taking away last teammate");
 
                 if (myTeam.length == 0) {
                     // No team to pop
@@ -172,12 +165,22 @@ function handleMessageBox(){
         // analyze message
         
         if (msg.lastIndexOf("/bidstart") == 0 || msg.lastIndexOf("/DARIUS") == 0) {
-            socket.emit("bidstart");
+            if (admin) {
+                socket.emit("bidstart");
+            }
+            else {
+                sayNotAuth();
+            }
         }
 
         // Kludge, take out when timer is working
         else if (msg.lastIndexOf("/bidend") == 0) {
-            socket.emit("bidend");
+            if (admin) {
+                socket.emit("bidend");
+            }
+            else {
+                sayNotAuth();
+            }
         }
 
         else if (msg.lastIndexOf("/bid") == 0) {
