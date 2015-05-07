@@ -148,6 +148,11 @@ io.on("connection", function (socket) {
         console.log("SETPOINTS: giving " + userToGive + " " + numPoints + " points");
         io.sockets.emit("setpoints", userToGive, numPoints);
     });
+    
+    socket.on("addpoints", function (userToGive, numPoints) {
+        console.log("ADDPOINTS: adding " + numPoints + " points to " + userToGive);
+        io.sockets.emit("addpoints", userToGive, numPoints);
+    });
 
     socket.on("setlastmember", function (userToSet, teammate) {
         console.log("SETLASTMEMBER: setting " + userToSet + "'s last guy to " + teammate);

@@ -105,6 +105,23 @@ else {
             socket.emit("admin", "Confirmed setting " + username + "'s points to " + numPoints);
         }
     });
+    
+    socket.on("addpoints", function (userToGive, numPoints) {
+        if (username == userToGive) {
+            points += numPoints * 1;
+            updatePoints(points);
+            
+            if (numPoints > 0) {
+                addChat("You got " + numPoints + " more points for a total of " + points + "!");
+                socket.emit("admin", "Confirmed adding " + numPoints + " points to " + username + " for a total of " + points + " points");
+            }
+
+            else if (numPoints < 0) {
+                addChat("You lost " + (numPoints * -1) + " points for a total of " + points + "...");
+                socket.emit("admin", "Confirmed subtracting " + (numPoints * -1) + " points from " + username + " for a total of " + points + " points");
+            }
+        }
+    });
 
     socket.on("setlastmember", function (userToSet, teammate) {
         
@@ -173,7 +190,7 @@ function handleMessageBox(){
             socket.emit("promote", password);            
         }
 
-        else if (msg.lastIndexOf("/setpoints") == 0) {
+        else if (msg.lastIndexOf("/setpoints") == 0 || msg.lastIndexOf("/addpoints") == 0) {
             if (admin) {
                 var splitMsg = msg.split(" ");
                 var userToGive = splitMsg[1];
@@ -181,7 +198,7 @@ function handleMessageBox(){
                 
                 if (!isNaN(numPoints)) {
 
-                    socket.emit("setpoints", userToGive, numPoints);
+                    socket.emit(splitMsg[0].replace("/",""), userToGive, numPoints);
                 }
 
                 else {
