@@ -87,7 +87,7 @@ else {
     socket.on("promote", function (result) {
         if (!admin && result) {
             admin = true;
-            addChat("Admin status granted!", "");
+            socket.emit("admin", username + " promoted to admin");
         }
 
         else if (!result) {
