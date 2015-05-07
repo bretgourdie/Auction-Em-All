@@ -85,13 +85,13 @@ io.on("connection", function (socket) {
         io.sockets.emit("chat", bold, nonbold);
     });
 
-    socket.on('bidstart', function () {
+    socket.on('startbid', function () {
         biddingTime = true;
         topBidUser = "Nobody";
         topBid = 0;
-        console.log("BIDSTART: " + socketToUser[socket.id] + " is starting the bidding!");
+        console.log("STARTBID: " + socketToUser[socket.id] + " is starting the bidding!");
         io.sockets.emit("chat", "Bidding begins in 10 seconds!", "");
-        io.sockets.emit("bidstart");
+        io.sockets.emit("startbid");
     });
 
     socket.on('bid', function (user, bid) {
@@ -113,9 +113,9 @@ io.on("connection", function (socket) {
         }
     });
 
-    socket.on('bidend', function () {
+    socket.on('endbid', function () {
         biddingTime = false;
-        console.log("BIDEND: " + socketToUser[socket.id] + " saying bidding has ended");
+        console.log("ENDBID: " + socketToUser[socket.id] + " saying bidding has ended");
         console.log("BIDRESULT: " + topBidUser + " won with bid of " + topBid);
 
         if (topBid == 0) {
@@ -125,7 +125,7 @@ io.on("connection", function (socket) {
         else {
             io.sockets.emit('chat', topBidUser + " won with their bid of " + topBid + "!", "");
         }
-        io.sockets.emit("bidend", topBidUser, currentDrafter);
+        io.sockets.emit("endbid", topBidUser, currentDrafter);
     });
 
     socket.on("promote", function (password) {

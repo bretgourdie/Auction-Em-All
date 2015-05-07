@@ -61,12 +61,12 @@ else {
         }
     });
     
-    socket.on("bidstart", function () {
+    socket.on("startbid", function () {
         $("#bid-div").show();
         addChat("10-second timer countdown starts here.");
     });
     
-    socket.on("bidend", function (topBidUser, biddedThing) {
+    socket.on("endbid", function (topBidUser, biddedThing) {
         if (username == topBidUser) {
             
             myTeam.push(biddedThing);
@@ -164,9 +164,9 @@ function handleMessageBox(){
     if (msg) {
         // analyze message
         
-        if (msg.lastIndexOf("/bidstart") == 0 || msg.lastIndexOf("/DARIUS") == 0) {
+        if (msg.lastIndexOf("/startbid") == 0 || msg.lastIndexOf("/DARIUS") == 0) {
             if (admin) {
-                socket.emit("bidstart");
+                socket.emit("startbid");
             }
             else {
                 sayNotAuth();
@@ -174,9 +174,9 @@ function handleMessageBox(){
         }
 
         // Kludge, take out when timer is working
-        else if (msg.lastIndexOf("/bidend") == 0) {
+        else if (msg.lastIndexOf("/endbid") == 0) {
             if (admin) {
-                socket.emit("bidend");
+                socket.emit("endbid");
             }
             else {
                 sayNotAuth();
