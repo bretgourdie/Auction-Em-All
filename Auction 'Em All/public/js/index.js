@@ -63,7 +63,11 @@ else {
     
     socket.on("startbid", function (currentDrafter, minBid) {
         $("#bid-div").show();
-        $("#bidding-on").text(currentDrafter);
+        $("#bidding-on").html("<a href='http://www.smogon.com/dex/xy/pokemon/" 
+            + currentDrafter.toLowerCase() 
+            + "' target='_blank'>" 
+            + currentDrafter 
+            + "</a>");
         $("#bid-button").text("Bid " + minBid);
         addChat("10-second timer countdown starts here.");
     });
