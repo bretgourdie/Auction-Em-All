@@ -102,7 +102,9 @@ else {
     });
     
     socket.on("donebid", function () {
+        addChat("The draft has concluded! Thank you for participating!", "");
         socket.emit("admin", username + ": " + myTeam.join(", "));
+        $("#bid-div").hide();
     });
     
     // Privileged Events
