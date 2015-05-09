@@ -141,7 +141,7 @@ io.on("connection", function (socket) {
         else {
             io.sockets.emit('chat', topBidUser + " won with their bid of " + topBid + "!", "");
         }
-        io.sockets.emit("endbid", topBidUser, currentDrafter);
+        io.sockets.emit("endbid", topBidUser, topBid, currentDrafter);
     });
     
     socket.on("endall", function () {
@@ -191,7 +191,7 @@ function startTheBidding(){
     
     if (draftAndMinBid.length > 0) {
         biddingTime = true;
-        topBidUser = "Nobody";
+        topBidUser = null;
         topBid = 0;
         setDrafterAndMinBid();
         io.sockets.emit("chat", "Bidding begins in 10 seconds!", "");

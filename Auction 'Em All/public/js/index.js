@@ -80,12 +80,16 @@ else {
         addChat("10-second timer countdown starts here.");
     });
     
-    socket.on("endbid", function (topBidUser, biddedThing) {
+    socket.on("endbid", function (topBidUser, topBid, biddedThing) {
         if (username == topBidUser) {
             
             myTeam.push(biddedThing);
             
             updateTeam(myTeam);
+
+            points -= topBid;
+
+            updatePoints(points);
         }
 
         addChat("Stop the timer here.", "");
