@@ -61,8 +61,10 @@ else {
         }
     });
     
-    socket.on("startbid", function () {
+    socket.on("startbid", function (currentDrafter, minBid) {
         $("#bid-div").show();
+        $("#bidding-on").text(currentDrafter);
+        $("#bid-button").text("Bid " + minBid);
         addChat("10-second timer countdown starts here.");
     });
     
@@ -75,6 +77,16 @@ else {
         }
 
         addChat("Stop the timer here.", "");
+
+        socket.emit("checkin");
+    });
+    
+    socket.on("requestCheckin", function () {
+        socket.emit("checkin");
+    });
+    
+    socket.on("donebid", function () {
+        socket.emit("admin", username + ": " + myTeam.join(", "));
     });
     
     // Privileged Events
@@ -164,10 +176,20 @@ function handleMessageBox(){
     if (msg) {
         // analyze message
         
-        if (msg.lastIndexOf("/startbid") == 0 || msg.lastIndexOf("/DARIUS") == 0) {
+        if (msg.lastIndexOf("/startbid") == 0) {
             if (admin) {
                 socket.emit("startbid");
             }
+            else {
+                sayNotAuth();
+            }
+        }
+
+        else if (msg.lastIndexOf("/startall") == 0 || msg.lastIndexOf("/DARIUS") == 0) {
+            if (admin) {
+                socket.emit("startall");
+            }
+
             else {
                 sayNotAuth();
             }
@@ -222,6 +244,17 @@ function handleMessageBox(){
                 var teammate = splitMsg[2];
 
                 socket.emit("setlastmember", userToSet, teammate);
+            }
+
+            else {
+                sayNotAuth();
+            }
+        }
+
+        else if (msg.lastIndexOf("/endall") == 0) {
+            if (admin) {
+                socket.emit("admin", username + " ending the draft prematurely...");
+                socket.emit("endall");
             }
 
             else {

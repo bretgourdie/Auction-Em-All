@@ -17,8 +17,11 @@ var biddingTime = false;
 var topBid = 0;
 var topBidUser = "";
 var currentDrafter = "";
+var minBid = 0;
 var draftAndMinBid = [];
 var promotePassword = "badminmike";
+
+var currentCheckedIn = 0;
 
 var app = express();
 
@@ -84,14 +87,27 @@ io.on("connection", function (socket) {
         console.log("CHAT: " + bold + ": " + nonbold);
         io.sockets.emit("chat", bold, nonbold);
     });
+    
+    socket.on("startall", function () {
+        console.log("STARTALL: " + socketToUser[socket.id] + " is starting the bidding process! Waiting for checkins...");
+        io.sockets.emit("requestCheckin");
+    });
+    
+    socket.on("checkin", function () {
+        currentCheckedIn++;
+        
+        console.log("CHECKIN: " + currentCheckedIn + " users have checked in");
+
+        if (currentCheckedIn == userList.length) {
+            
+            console.log("CHECKIN: Everybody's in! Start bidding!");
+            startTheBidding();
+        }
+    });
 
     socket.on('startbid', function () {
-        biddingTime = true;
-        topBidUser = "Nobody";
-        topBid = 0;
-        console.log("STARTBID: " + socketToUser[socket.id] + " is starting the bidding!");
-        io.sockets.emit("chat", "Bidding begins in 10 seconds!", "");
-        io.sockets.emit("startbid");
+        console.log("STARTBID: " + socketToUser[socket.id] + " is manually starting the bidding!");
+        startTheBidding();
     });
 
     socket.on('bid', function (user, bid) {
@@ -127,6 +143,11 @@ io.on("connection", function (socket) {
         }
         io.sockets.emit("endbid", topBidUser, currentDrafter);
     });
+    
+    socket.on("endall", function () {
+        console.log("ENDALL: ending bid prematurely");
+        io.sockets.emit("donebid");
+    });
 
     socket.on("promote", function (password) {
         if (password == promotePassword) {
@@ -158,5 +179,38 @@ io.on("connection", function (socket) {
         console.log("SETLASTMEMBER: setting " + userToSet + "'s last guy to " + teammate);
         io.sockets.emit("setlastmember", userToSet, teammate);
     });
+
+    socket.on("endall", function () {
+        draftAndMinBid = [];
+    });
 });
 
+function startTheBidding(){
+    
+    currentCheckedIn = 0;
+    
+    if (draftAndMinBid.length > 0) {
+        biddingTime = true;
+        topBidUser = "Nobody";
+        topBid = 0;
+        setDrafterAndMinBid();
+        io.sockets.emit("chat", "Bidding begins in 10 seconds!", "");
+        io.sockets.emit("startbid", currentDrafter, minBid);
+    }
+
+    else {
+        console.log("Done with bidding!");
+        io.sockets.emit("admin", "Team logs as follows:");
+        io.sockets.emit("donebid");
+    }
+}
+
+function setDrafterAndMinBid(){
+    var curEntry = draftAndMinBid.shift();
+    var splitEntry = curEntry.split(",");
+
+    currentDrafter = splitEntry[0];
+    minBid = splitEntry[1];
+
+    console.log("SETDRAFTERANDMIN: Grabbed \"" + currentDrafter + "\" for " + minBid);
+}
