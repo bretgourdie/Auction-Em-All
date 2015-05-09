@@ -280,6 +280,7 @@ function handleBid(){
 
 function addChat(boldPart, regularMsg){
     $("#messages").append($("<b>").text(boldPart)).append(regularMsg).append($("<p>"));
+    $("#messages").animate({ scrollTop: $("#messages")[0].scrollHeight }, 1000);
 }
 
 function sayNotAuth(){
