@@ -3,6 +3,7 @@ var currentTeam = [];
 var admin = false;
 var points = 0;
 var myTeam = [];
+var bidToBeat = 0;
 
 username = prompt("Please enter a user name.");
 
@@ -59,6 +60,9 @@ else {
         else {
             addChat(topBidUser, " has bid " + topBid + "!");
         }
+
+        bidToBeat = topBid * 1 + 10;
+        setBidButton();
     });
     
     socket.on("startbid", function (currentDrafter, minBid) {
@@ -68,7 +72,11 @@ else {
             + "' target='_blank'>" 
             + currentDrafter 
             + "</a>");
-        $("#bid-button").text("Bid " + minBid);
+        
+        bidToBeat = minBid;
+        
+        setBidButton();
+
         addChat("10-second timer countdown starts here.");
     });
     
@@ -210,7 +218,9 @@ function handleMessageBox(){
         }
 
         else if (msg.lastIndexOf("/bid") == 0) {
-            handleBid();
+            if (points >= bidToBeat) {
+                handleBid();
+            }
         }
 
         else if (msg.lastIndexOf("/promote") == 0) {
@@ -278,8 +288,7 @@ function handleMessageBox(){
 }
 
 function handleBid(){
-    var bid = 1337;
-    socket.emit("bid", username, bid);
+    socket.emit("bid", username, bidToBeat);
 }
 
 function addChat(boldPart, regularMsg){
@@ -297,4 +306,11 @@ function updatePoints(numPoints){
 
 function updateTeam(newTeam){
     $("#my-team").text(newTeam.join(", "));
+}
+
+function setBidButton(){
+
+    $("#bid-button").prop("disabled", points < bidToBeat);
+
+    $("#bid-button").text("Bid " + bidToBeat);
 }
