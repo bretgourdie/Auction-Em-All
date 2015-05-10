@@ -183,6 +183,9 @@ else {
             updateTeam(myTeam);
         }
     });
+
+    
+    $("#message-box").focus();
 }
 
 
