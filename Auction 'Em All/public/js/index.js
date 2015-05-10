@@ -5,6 +5,9 @@ var points = 0;
 var myTeam = [];
 var bidToBeat = 0;
 
+var biddingIntervalId = null;
+var restingIntervalId = null;
+
 username = prompt("Please enter a user name.");
 
 if (username == null || username == "") {
@@ -76,8 +79,7 @@ else {
         bidToBeat = minBid;
         
         setBidButton();
-
-        addChat("10-second timer countdown starts here.");
+        startRestTimer();
     });
     
     socket.on("endbid", function (topBidUser, topBid, biddedThing) {
@@ -323,3 +325,43 @@ function setBidButton(){
 
     $("#bid-button").text("Bid " + bidToBeat);
 }
+
+function startRestTimer() {
+    var timer = duration = 10, minutes, seconds;
+    restingIntervalId = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+        
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        
+        $("#bid-timer").text(minutes + ":" + seconds);
+        
+        if (--timer < 0) {
+            allowBidding();
+            clearInterval(restingIntervalId);
+        }
+    }, 1000);
+}
+
+function startBiddingTimer(){
+    var timer = duration = 60 * 2, minutes, seconds;
+    biddingIntervalId = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+        
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        
+        $("#bid-timer").text(minutes + ":" + seconds);
+        
+        if (--timer < 0) {
+            clearInterval(biddingIntervalId);
+        }
+    }, 1000);
+}
+
+function allowBidding(){
+    startBiddingTimer();
+}
+
