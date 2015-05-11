@@ -56,7 +56,7 @@ else {
     });
     
     // Bidding events
-    socket.on('bid', function (topBidUser, topBid) {
+    socket.on("bid", function (topBidUser, topBid) {
         if (username == topBidUser) {
             addChat("You", " have bid " + topBid + "!");
         }
@@ -326,7 +326,12 @@ function updateTeam(newTeam){
 
 function setBidButton(){
 
-    $("#bid-button").prop("disabled", points < bidToBeat);
+    $("#bid-button").prop("disabled", true);
+    
+    setTimeout(function () {
+        $("#bid-button").prop("disabled", points < bidToBeat);
+    }, 500)
+    
 
     $("#bid-button").text("Bid " + bidToBeat);
 }
