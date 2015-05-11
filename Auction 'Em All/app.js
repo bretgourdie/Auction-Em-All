@@ -130,18 +130,20 @@ io.on("connection", function (socket) {
     });
 
     socket.on('endbid', function () {
+
         biddingTime = false;
         console.log("ENDBID: " + socketToUser[socket.id] + " saying bidding has ended");
         console.log("BIDRESULT: " + topBidUser + " won with bid of " + topBid);
-
+            
         if (topBid == 0) {
-            io.sockets.emit("chat", "Nobody", " bid this round! This guy is crap!");
+            socket.emit("chat", "Nobody", " bid this round! This guy is crap!");
         }
         
         else {
-            io.sockets.emit('chat', topBidUser + " won with their bid of " + topBid + "!", "");
+            socket.emit('chat', topBidUser + " won with their bid of " + topBid + "!", "");
         }
-        io.sockets.emit("endbid", topBidUser, topBid, currentDrafter);
+        socket.emit("endbid", topBidUser, topBid, currentDrafter);
+        
     });
     
     socket.on("endall", function () {

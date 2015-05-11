@@ -357,6 +357,7 @@ function startBiddingTimer(){
         
         if (--timer < 0) {
             clearInterval(biddingIntervalId);
+            socket.emit("endbid");
         }
     }, 1000);
 }
