@@ -8,6 +8,8 @@ var bidToBeat = 0;
 var biddingIntervalId = null;
 var restingIntervalId = null;
 
+var biddingTime = false;
+
 username = prompt("Please enter a user name.");
 
 if (username == null || username == "") {
@@ -329,7 +331,7 @@ function setBidButton(){
     $("#bid-button").prop("disabled", true);
     
     setTimeout(function () {
-        $("#bid-button").prop("disabled", points < bidToBeat);
+        $("#bid-button").prop("disabled", (points < bidToBeat) || !biddingTime);
     }, 500)
     
 
@@ -373,13 +375,16 @@ function startBiddingTimer(){
 
 function allowBidding(){
     startBiddingTimer();
+    biddingTime = true;
     clearInterval(restingIntervalId);
     $("#bid-message").text("Bidding on:");
     $("#bid-timer-message").text("Place your bids!");
+    setBidButton();
 }
 
 function resolveBidding(){
     clearInterval(biddingIntervalId);
+    biddingTime = false;
     $("#bid-message").text("Waiting to bid on:");
     $("#bid-timer-message").text("Waiting for next round...");
 }
