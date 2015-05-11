@@ -162,6 +162,11 @@ io.on("connection", function (socket) {
         socket.emit("promote", password == promotePassword);
     });
     
+    socket.on("peekpoints", function (userToPeek) {
+        console.log("PEEKPOINTS: " + socketToUser[socket.id] + " wants to know " + userToPeek + "'s points");
+        io.sockets.emit("peekpoints", userToPeek);
+    });
+    
     socket.on("admin", function (msg) {
         console.log("ADMIN: " + msg);
         io.sockets.emit("admin", msg);

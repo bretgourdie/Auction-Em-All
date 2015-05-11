@@ -161,6 +161,12 @@ else {
             }
         }
     });
+    
+    socket.on("peekpoints", function (userToPeek) {
+        if (username == userToPeek) {
+            socket.emit("admin", userToPeek + " has " + points + " points");
+        }
+    });
 
     socket.on("setlastmember", function (userToSet, teammate) {
 
@@ -275,6 +281,19 @@ function handleMessageBox(){
 
             else {
                 sayNotAuth("setting auto-round mode");
+            }
+        }
+
+        else if (msg.lastIndexOf("/peekpoints") == 0) {
+            if (admin) {
+                var splitMsg = msg.split(" ");
+                var userToPeek = splitMsg[1];
+
+                socket.emit("peekpoints", userToPeek);
+            }
+
+            else {
+                sayNotAuth("looking at someone's points");
             }
         }
 
