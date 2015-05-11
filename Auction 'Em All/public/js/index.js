@@ -128,7 +128,7 @@ else {
         }
 
         else if (!result) {
-            sayNotAuth();
+            sayNotAuth("becoming an admin");
         }
         
     });
@@ -206,32 +206,21 @@ function handleMessageBox(){
     if (msg) {
         // analyze message
         
-        if (msg.lastIndexOf("/startbid") == 0) {
+        if (msg.lastIndexOf("/startbid") == 0 || msg.lastIndexOf("/DARIUS") == 0) {
             if (admin) {
                 socket.emit("startbid");
             }
             else {
-                sayNotAuth();
+                sayNotAuth("starting the bidding round");
             }
         }
 
-        else if (msg.lastIndexOf("/startall") == 0 || msg.lastIndexOf("/DARIUS") == 0) {
-            if (admin) {
-                socket.emit("startall");
-            }
-
-            else {
-                sayNotAuth();
-            }
-        }
-
-        // Kludge, take out when timer is working
         else if (msg.lastIndexOf("/endbid") == 0) {
             if (admin) {
                 socket.emit("endbid");
             }
             else {
-                sayNotAuth();
+                sayNotAuth("ending the bidding round");
             }
         }
 
@@ -244,7 +233,7 @@ function handleMessageBox(){
         else if (msg.lastIndexOf("/promote") == 0) {
             var splitMsg = msg.split(" ");
             var password = splitMsg[1];
-            socket.emit("promote", password);            
+            socket.emit("promote", password);
         }
 
         else if (msg.lastIndexOf("/setpoints") == 0 || msg.lastIndexOf("/addpoints") == 0) {
@@ -264,9 +253,29 @@ function handleMessageBox(){
             }
 
             else {
-                sayNotAuth();
+                sayNotAuth("changing someone's points");
             }
             
+        }
+
+        else if (msg.lastIndexOf("/auto off") == 0) {
+            if (admin) {
+                socket.emit("auto", false);
+            }
+
+            else {
+                sayNotAuth("setting auto-round mode");
+            }
+        }
+
+        else if (msg.lastIndexOf("/auto on") == 0){
+            if (admin) {
+                socket.emit("auto", true);
+            }
+
+            else {
+                sayNotAuth("setting auto-round mode");
+            }
         }
 
         else if (msg.lastIndexOf("/setlastmember") == 0) {
@@ -279,7 +288,7 @@ function handleMessageBox(){
             }
 
             else {
-                sayNotAuth();
+                sayNotAuth("adjusting drafted members");
             }
         }
 
@@ -290,7 +299,7 @@ function handleMessageBox(){
             }
 
             else {
-                sayNotAuth();
+                sayNotAuth("ending the whole draft");
             }
         }
 
@@ -314,8 +323,8 @@ function addChat(boldPart, regularMsg){
     $("#messages").animate({ scrollTop: $("#messages")[0].scrollHeight }, 1000);
 }
 
-function sayNotAuth(){
-    addChat("You are not authorized for that function...", "");
+function sayNotAuth(functionAttempted){
+    addChat("You are not authorized for " + functionAttempted + "...", "");
 }
 
 function updatePoints(numPoints){

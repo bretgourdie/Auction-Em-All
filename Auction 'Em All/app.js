@@ -20,6 +20,7 @@ var currentDrafter = "";
 var minBid = 0;
 var draftAndMinBid = [];
 var promotePassword = "badminmike";
+var autoNext = true;
 
 var currentCheckedIn = 0;
 
@@ -88,11 +89,6 @@ io.on("connection", function (socket) {
         io.sockets.emit("chat", bold, nonbold);
     });
     
-    socket.on("startall", function () {
-        console.log("STARTALL: " + socketToUser[socket.id] + " is starting the bidding process! Waiting for checkins...");
-        io.sockets.emit("requestCheckin");
-    });
-    
     socket.on("checkin", function () {
         currentCheckedIn++;
         
@@ -106,7 +102,7 @@ io.on("connection", function (socket) {
     });
 
     socket.on('startbid', function () {
-        console.log("STARTBID: " + socketToUser[socket.id] + " is manually starting the bidding!");
+        console.log("STARTBID: " + socketToUser[socket.id] + " is starting the bidding!");
         startTheBidding();
     });
 
@@ -142,7 +138,10 @@ io.on("connection", function (socket) {
         else {
             socket.emit('chat', topBidUser + " won with their bid of " + topBid + "!", "");
         }
-        socket.emit("endbid", topBidUser, topBid, currentDrafter);
+        
+        if (autoNext) {
+            socket.emit("endbid", topBidUser, topBid, currentDrafter);
+        }
         
     });
     
@@ -164,7 +163,15 @@ io.on("connection", function (socket) {
     });
     
     socket.on("admin", function (msg) {
+        console.log("ADMIN: " + msg);
         io.sockets.emit("admin", msg);
+    });
+    
+    socket.on("auto", function (newAuto) {
+        autoNext = newAuto;
+        var newAutoString = newAuto ? "on" : "off";
+        console.log("ADMIN: turning auto " + newAutoString);
+        io.sockets.emit("admin", "Auto has been turned " + newAuto);
     });
 
     socket.on("setpoints", function (userToGive, numPoints) {
