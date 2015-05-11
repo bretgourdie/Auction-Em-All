@@ -133,6 +133,7 @@ else {
         if (username == userToGive) {
             points = numPoints;
             updatePoints(points);
+            setBidButton();
             addChat("Bidding points set to " + numPoints + "!");
             socket.emit("admin", "Confirmed setting " + username + "'s points to " + numPoints);
         }
@@ -142,7 +143,8 @@ else {
         if (username == userToGive) {
             points += numPoints * 1;
             updatePoints(points);
-            
+            setBidButton();
+
             if (numPoints > 0) {
                 addChat("You got " + numPoints + " more points for a total of " + points + "!");
                 socket.emit("admin", "Confirmed adding " + numPoints + " points to " + username + " for a total of " + points + " points");
