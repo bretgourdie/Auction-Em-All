@@ -357,12 +357,20 @@ function startBiddingTimer(){
         
         if (--timer < 0) {
             clearInterval(biddingIntervalId);
-            socket.emit("endbid");
+            resolveBidding();
         }
     }, 1000);
 }
 
 function allowBidding(){
     startBiddingTimer();
+    $("#bid-message").text("Bidding on:");
+    $("#bid-timer-message").text("Place your bids!");
+}
+
+function resolveBidding(){
+    socket.emit("endbid");
+    $("#bid-message").text("Waiting to bid on:");
+    $("#bid-timer-message").text("Waiting for next round...");
 }
 
