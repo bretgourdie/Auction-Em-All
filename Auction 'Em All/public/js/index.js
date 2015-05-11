@@ -93,8 +93,11 @@ else {
 
             updatePoints(points);
         }
-
-        addChat("Stop the timer here.", "");
+        
+        clearInterval(restingIntervalId);
+        
+        resolveBidding();
+        
 
         socket.emit("checkin");
     });
@@ -341,7 +344,6 @@ function startRestTimer() {
         
         if (--timer < 0) {
             allowBidding();
-            clearInterval(restingIntervalId);
         }
     }, 1000);
 }
@@ -358,20 +360,21 @@ function startBiddingTimer(){
         $("#bid-timer").text(minutes + ":" + seconds);
         
         if (--timer < 0) {
-            clearInterval(biddingIntervalId);
             resolveBidding();
+            socket.emit("endbid");
         }
     }, 1000);
 }
 
 function allowBidding(){
     startBiddingTimer();
+    clearInterval(restingIntervalId);
     $("#bid-message").text("Bidding on:");
     $("#bid-timer-message").text("Place your bids!");
 }
 
 function resolveBidding(){
-    socket.emit("endbid");
+    clearInterval(biddingIntervalId);
     $("#bid-message").text("Waiting to bid on:");
     $("#bid-timer-message").text("Waiting for next round...");
 }
