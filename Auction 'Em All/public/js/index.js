@@ -69,7 +69,7 @@ else {
         }
 
         bidToBeat = topBid * 1 + 10;
-        setBidButton();
+        setBidButton(topBidUser);
         biddingTimer = Math.max(biddingTimer, 5); // Keep resetting at five
     });
     
@@ -412,14 +412,13 @@ function updateTeam(newTeam){
     $("#my-team").text(displayTeam);
 }
 
-function setBidButton(){
+function setBidButton(topBidUser){
 
     $("#bid-button").prop("disabled", true);
-    
+
     setTimeout(function () {
-        $("#bid-button").prop("disabled", (points < bidToBeat) || !biddingTime);
-    }, 500)
-    
+        $("#bid-button").prop("disabled", (points < bidToBeat) || !biddingTime || (username == topBidUser));
+    }, 500);
 
     $("#bid-button").text("Bid " + bidToBeat);
 }
