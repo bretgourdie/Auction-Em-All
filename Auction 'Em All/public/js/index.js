@@ -400,7 +400,6 @@ function updatePoints(numPoints){
 }
 
 function updateTeam(newTeam){
-    alert(newTeam);
     var displayTeam = newTeam.join(", ");
     
     if (newTeam.length == 0) {
