@@ -485,7 +485,8 @@ function resolveBidding(){
 function notifyMe(currentDrafter) {
     // Let's check if the browser supports notifications
     if (!("Notification" in window)) {
-        alert("This browser does not support desktop notification");
+        //alert("This browser does not support desktop notification");
+        // ignore
     }
 
   // Let's check whether notification permissions have alredy been granted
