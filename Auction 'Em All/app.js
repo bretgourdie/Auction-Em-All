@@ -248,6 +248,10 @@ io.on("connection", function (socket) {
 
             startTheBidding();
         }
+
+        else {
+            io.sockets.emit("admin", socketToUser[socket.id] + " is trying to redo everything but it's too early");
+        }
     });
     
     socket.on("auto", function (newAuto) {
