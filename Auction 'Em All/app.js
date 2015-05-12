@@ -290,7 +290,7 @@ function startTheBidding(){
         topBidUser = "";
         topBid = 0;
         setDrafterAndMinBid();
-        io.sockets.emit("chat", "Bidding begins in 10 seconds!", "");
+        io.sockets.emit("chat", "Bidding on " + currentDrafter + " begins in 10 seconds!", "");
         io.sockets.emit("startbid", currentDrafter, minBid);
     }
 

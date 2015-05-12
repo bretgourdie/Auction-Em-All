@@ -474,6 +474,7 @@ function allowBidding(){
     clearInterval(restingIntervalId);
     $("#bid-message").text("Bidding on:");
     $("#bid-timer-message").text("Place your bids!");
+    addChat("Start bidding on ", $("#bidding-on").html() + "!");
     setBidButton();
 }
 
