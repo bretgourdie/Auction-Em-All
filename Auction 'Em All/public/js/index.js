@@ -167,6 +167,12 @@ else {
             socket.emit("admin", userToPeek + " has " + points + " points");
         }
     });
+    
+    socket.on("redo", function () {
+        clearInterval(biddingIntervalId);
+        clearInterval(restingIntervalId);
+        biddingTime = false;
+    });
 
     socket.on("setlastmember", function (userToSet, teammate) {
 
@@ -310,6 +316,28 @@ function handleMessageBox(){
                 sayNotAuth("adjusting drafted members");
             }
         }
+
+        else if (msg.lastIndexOf("/redo current") == 0) {
+            if (admin) {
+                socket.emit("admin", username + " redoing the current round");
+                socket.emit("redocurrent");
+            }
+
+            else {
+                sayNotAuth("redoing the current round");
+            }
+        }
+
+        /*else if (msg.lastIndexOf("/redo last") == 0) {
+            if (admin) {
+                socket.emit("admin", username + " redoing the last round");
+                socket.emit("redolast");
+            }
+
+            else {
+                sayNotAuth("redoing the last round");
+            }
+        }*/
 
         else if (msg.lastIndexOf("/endall") == 0) {
             if (admin) {

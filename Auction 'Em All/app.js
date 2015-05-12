@@ -19,6 +19,8 @@ var topBidUser = "";
 var currentDrafter = "";
 var minBid = 0;
 var draftAndMinBid = [];
+var oldDrafts = [];
+var oldBids = [];
 var promotePassword = "badminmike";
 var autoNext = true;
 
@@ -139,6 +141,8 @@ io.on("connection", function (socket) {
             socket.emit('chat', topBidUser + " won with their bid of " + topBid + "!", "");
         }
         
+        oldBids.push(topBidUser + "," + topBid);
+        
         if (autoNext) {
             socket.emit("endbid", topBidUser, topBid, currentDrafter);
         }
@@ -170,6 +174,17 @@ io.on("connection", function (socket) {
     socket.on("admin", function (msg) {
         console.log("ADMIN: " + msg);
         io.sockets.emit("admin", msg);
+    });
+    
+    socket.on("redocurrent", function () {        
+        var oldDraft = oldDrafts.pop();
+        console.log("REDOCURRENT: putting " + oldDraft + " back on the stack");
+        draftAndMinBid.unshift(oldDraft);
+        
+        io.sockets.emit("redo");
+
+        startTheBidding();
+
     });
     
     socket.on("auto", function (newAuto) {
@@ -205,7 +220,7 @@ function startTheBidding(){
     
     if (draftAndMinBid.length > 0) {
         biddingTime = true;
-        topBidUser = null;
+        topBidUser = "";
         topBid = 0;
         setDrafterAndMinBid();
         io.sockets.emit("chat", "Bidding begins in 10 seconds!", "");
@@ -221,6 +236,7 @@ function startTheBidding(){
 
 function setDrafterAndMinBid(){
     var curEntry = draftAndMinBid.shift();
+    oldDrafts.push(curEntry);
     var splitEntry = curEntry.split(",");
 
     currentDrafter = splitEntry[0];
