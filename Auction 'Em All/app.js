@@ -53,8 +53,6 @@ var data = fs.readFileSync("./draft/ListOfPokes.csv", "ascii");
 
 console.log("DATARESULT:\n\n" + data + "\n\nDATAEND\n");
 
-fs = null;
-
 draftAndMinBid = data.split("\r\n");
 
 var serve = http.createServer(app);
@@ -252,6 +250,32 @@ io.on("connection", function (socket) {
         else {
             io.sockets.emit("admin", socketToUser[socket.id] + " is trying to redo everything but it's too early");
         }
+    });
+    
+    socket.on("reload", function (clearUsers) {
+        
+        io.sockets.emit("redo"); //stop everything
+        
+        if (clearUsers) {
+            userList.forEach(function (entry) {
+                io.sockets.emit("setpoints", entry, 0);
+                io.sockets.emit("clearteam", entry);
+            });
+        }
+        
+        io.sockets.emit("hidebid");
+        
+        biddingTime = false;
+        topBid = 0;
+        topBidUser = "";
+        currentDrafter = "";
+        minBid = 0;
+        draftAndMinBid = [];
+        oldDrafts = [];
+        oldBids = [];
+
+        data = fs.readFileSync("./draft/ListOfPokes.csv", "ascii");
+        draftAndMinBid = data.split("\r\n");
     });
     
     socket.on("auto", function (newAuto) {

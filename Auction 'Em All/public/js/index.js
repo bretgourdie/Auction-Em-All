@@ -148,6 +148,19 @@ else {
         }
     });
     
+    socket.on("clearteam", function (userToClear) {
+        if (username == userToClear) {
+            myTeam = [];
+            updateTeam(myTeam);
+            
+            addChat("Your team has been cleared!");
+        }
+    });
+    
+    socket.on("hidebid", function (){
+        $("#bid-div").hide();
+    })
+    
     socket.on("addpoints", function (userToGive, numPoints) {
         if (username == userToGive) {
             points += numPoints * 1;
@@ -364,6 +377,28 @@ function handleMessageBox(){
             }
         }
 
+        else if (msg.lastIndexOf("/reload clear") == 0) {
+            if (admin) {
+                socket.emit("admin", username + " is starting over from scratch");
+                socket.emit("reload", true);
+            }
+
+            else {
+                sayNotAuth("reloading everything");
+            }
+        }
+
+        else if (msg.lastIndexOf("/reload") == 0) {
+            if (admin) {
+                socket.emit("admin", username + " is reloading the roster");
+                socket.emit("reload", false);
+            }
+
+            else {
+                sayNotAuth("reloading the roster")
+            }
+        }
+
         else if (msg.lastIndexOf("/endall") == 0) {
             if (admin) {
                 socket.emit("admin", username + " ending the draft prematurely...");
@@ -456,7 +491,6 @@ function startBiddingTimer(){
         
         $("#bid-timer").text(minutes + ":" + seconds)
         var newColor = biddingTimer <= 5 ? "red" : "black";
-        console.log(biddingTimer + ":" + newColor)
         $("#bid-timer").css("color", newColor);
         
         biddingTimer--;
@@ -495,7 +529,7 @@ function notifyMe(currentDrafter) {
   // Let's check whether notification permissions have alredy been granted
     else if (Notification.permission === "granted") {
         // If it's okay let's create a notification
-        var notification = new Notification("Bidding on " + currentDrafter + " in 10 seceonds!");
+        var notification = new Notification("Bidding on " + currentDrafter + " in 10 seconds!");
     }
 
   // Otherwise, we need to ask the user for permission
@@ -503,7 +537,7 @@ function notifyMe(currentDrafter) {
         Notification.requestPermission(function (permission) {
             // If the user accepts, let's create a notification
             if (permission === "granted") {
-                var notification = new Notification("Bidding on " + currentDrafter + " in 10 seceonds!");
+                var notification = new Notification("Bidding on " + currentDrafter + " in 10 seconds!");
             }
         });
     }
