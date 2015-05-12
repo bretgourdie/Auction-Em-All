@@ -8,6 +8,8 @@ var bidToBeat = 0;
 var biddingIntervalId = null;
 var restingIntervalId = null;
 
+var biddingTimer;
+
 var biddingTime = false;
 
 username = prompt("Please enter a user name.");
@@ -68,6 +70,7 @@ else {
 
         bidToBeat = topBid * 1 + 10;
         setBidButton();
+        biddingTimer = Math.max(biddingTimer, 5); // Keep resetting at five
     });
     
     socket.on("startbid", function (currentDrafter, minBid) {
@@ -422,7 +425,7 @@ function setBidButton(){
 }
 
 function startRestTimer() {
-    var timer = duration = 10, minutes, seconds;
+    var timer = 10, minutes, seconds;
     restingIntervalId = setInterval(function () {
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
@@ -431,25 +434,32 @@ function startRestTimer() {
         seconds = seconds < 10 ? "0" + seconds : seconds;
         
         $("#bid-timer").text(minutes + ":" + seconds);
-        
-        if (--timer < 0) {
+
+        timer--;
+
+        if (timer < 0) {
             allowBidding();
         }
     }, 1000);
 }
 
 function startBiddingTimer(){
-    var timer = duration = 60 * 2, minutes, seconds;
+    biddingTimer = 60 * 2;
+    var minutes, seconds;
     biddingIntervalId = setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
+        minutes = parseInt(biddingTimer / 60, 10);
+        seconds = parseInt(biddingTimer % 60, 10);
         
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
         
         $("#bid-timer").text(minutes + ":" + seconds);
         
-        if (--timer < 0) {
+        console.log("biddingtimer: " + biddingTimer);
+        
+        biddingTimer--;
+
+        if (biddingTimer < 0) {
             resolveBidding();
             socket.emit("endbidindividual");
         }
