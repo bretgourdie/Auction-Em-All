@@ -258,7 +258,7 @@ io.on("connection", function (socket) {
         autoNext = newAuto;
         var newAutoString = newAuto ? "on" : "off";
         console.log("ADMIN: turning auto " + newAutoString);
-        io.sockets.emit("admin", "Auto has been turned " + newAuto);
+        io.sockets.emit("admin", "Auto has been turned " + newAutoString);
     });
 
     socket.on("setpoints", function (userToGive, numPoints) {
