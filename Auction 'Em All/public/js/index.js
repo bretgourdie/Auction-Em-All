@@ -434,6 +434,7 @@ function startRestTimer() {
         seconds = seconds < 10 ? "0" + seconds : seconds;
         
         $("#bid-timer").text(minutes + ":" + seconds);
+        $("#bid-timer").css("color", "black");
 
         timer--;
 
@@ -453,9 +454,10 @@ function startBiddingTimer(){
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
         
-        $("#bid-timer").text(minutes + ":" + seconds);
-        
-        console.log("biddingtimer: " + biddingTimer);
+        $("#bid-timer").text(minutes + ":" + seconds)
+        var newColor = biddingTimer <= 5 ? "red" : "black";
+        console.log(biddingTimer + ":" + newColor)
+        $("#bid-timer").css("color", newColor);
         
         biddingTimer--;
 
