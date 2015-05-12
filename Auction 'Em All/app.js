@@ -199,9 +199,7 @@ io.on("connection", function (socket) {
     
     socket.on("redocurrent", function () {
         if (oldDrafts.length > 0) {
-            var curDraft = oldDrafts.pop();
-            console.log("REDOCURRENT: putting " + curDraft + " back on the stack");
-            draftAndMinBid.unshift(curDraft);
+            putLastDraftOnTop("REDOCURRENT");
             
             io.sockets.emit("redo");
             
@@ -215,22 +213,11 @@ io.on("connection", function (socket) {
     
     socket.on("redolast", function () {
         if (oldDrafts.length > 1) {
-            var curDraft = oldDrafts.pop();
-            console.log("REDOLAST: putting current " + curDraft + " back on the stack");
-            draftAndMinBid.unshift(curDraft);
+            putLastDraftOnTop("REDOLAST");
             
-            var prevBidTransaction = oldBids.pop();
-            var prevBidSplit = prevBidTransaction.split(",");
-            var prevBidder = prevBidSplit[0];
-            var prevBid = prevBidSplit[1];
-            console.log("REDOLAST: refunding " + prevBid + " points to " + prevBidder);
-            io.sockets.emit("addpoints", prevBidder, prevBid);
-            console.log("REDOLAST: removing draft member from " + prevBidder + "'s team");
-            io.sockets.emit("setlastmember", prevBidder);
+            refundLastBid("REDOLAST");
 
-            var prevDraft = oldDrafts.pop();
-            console.log("REDOLAST: putting previous " + prevDraft + " back on the stack");
-            draftAndMinBid.unshift(prevDraft);
+            putLastDraftOnTop("REDOLAST");
             
             io.sockets.emit("redo");
 
@@ -241,6 +228,26 @@ io.on("connection", function (socket) {
             io.sockets.emit("admin", socketToUser[socket.id] + " is trying to redo last round, but that hasn't happened yet");
         }
         
+    });
+    
+    socket.on("redoall", function () {
+        if (oldDrafts.length > 0) {
+            var curDraft = oldDrafts.pop();
+            console.log("REDOALL: putting current " + curDraft + " back on the stack");
+            draftAndMinBid.unshift(curDraft);
+
+            while (oldBids.length > 0) {
+                refundLastBid("REDOALL");
+            }
+
+            while (oldDrafts.length > 0) {
+                putLastDraftOnTop("REDOALL");
+            }
+
+            io.sockets.emit("redo");
+
+            startTheBidding();
+        }
     });
     
     socket.on("auto", function (newAuto) {
@@ -299,4 +306,21 @@ function setDrafterAndMinBid(){
     minBid = splitEntry[1];
 
     console.log("SETDRAFTERANDMIN: Grabbed \"" + currentDrafter + "\" for " + minBid);
+}
+
+function putLastDraftOnTop(whichRedo){
+    var curDraft = oldDrafts.pop();
+    console.log(whichRedo + ": putting " + curDraft + " back on the stack");
+    draftAndMinBid.unshift(curDraft);
+}
+
+function refundLastBid(whichRedo){
+    var prevBidTransaction = oldBids.pop();
+    var prevBidSplit = prevBidTransaction.split(",");
+    var prevBidder = prevBidSplit[0];
+    var prevBid = prevBidSplit[1];
+    console.log(whichRedo + ": refunding " + prevBid + " points to " + prevBidder);
+    io.sockets.emit("addpoints", prevBidder, prevBid);
+    console.log(whichRedo + ": removing draft member from " + prevBidder + "'s team");
+    io.sockets.emit("setlastmember", prevBidder);
 }

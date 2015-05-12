@@ -339,6 +339,17 @@ function handleMessageBox(){
             }
         }
 
+        else if (msg.lastIndexOf("/redo all") == 0) {
+            if (admin) {
+                socket.emit("admin", username + " redoing the whole draft!");
+                socket.emit("redoall");
+            }
+
+            else {
+                sayNotAuth("redoing the whole draft");
+            }
+        }
+
         else if (msg.lastIndexOf("/redo") == 0) {
             if (admin) {
                 addChat("Admin Note:", " Which round are you redoing (last or current)?");
