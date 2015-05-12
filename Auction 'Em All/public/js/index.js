@@ -328,7 +328,7 @@ function handleMessageBox(){
             }
         }
 
-        /*else if (msg.lastIndexOf("/redo last") == 0) {
+        else if (msg.lastIndexOf("/redo last") == 0) {
             if (admin) {
                 socket.emit("admin", username + " redoing the last round");
                 socket.emit("redolast");
@@ -337,7 +337,17 @@ function handleMessageBox(){
             else {
                 sayNotAuth("redoing the last round");
             }
-        }*/
+        }
+
+        else if (msg.lastIndexOf("/redo") == 0) {
+            if (admin) {
+                addChat("Admin Note:", " Which round are you redoing (last or current)?");
+            }
+
+            else {
+                sayNotAuth("redoing a round");
+            }
+        }
 
         else if (msg.lastIndexOf("/endall") == 0) {
             if (admin) {
@@ -424,7 +434,7 @@ function startBiddingTimer(){
         
         if (--timer < 0) {
             resolveBidding();
-            socket.emit("endbid");
+            socket.emit("endbidindividual");
         }
     }, 1000);
 }
