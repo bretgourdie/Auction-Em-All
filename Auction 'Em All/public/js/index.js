@@ -389,7 +389,14 @@ function updatePoints(numPoints){
 }
 
 function updateTeam(newTeam){
-    $("#my-team").text(newTeam.join(", "));
+    alert(newTeam);
+    var displayTeam = newTeam.join(", ");
+    
+    if (newTeam.length == 0) {
+        displayTeam = "None";
+    }
+
+    $("#my-team").text(displayTeam);
 }
 
 function setBidButton(){
