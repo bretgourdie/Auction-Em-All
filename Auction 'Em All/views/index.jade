@@ -34,19 +34,18 @@ block content
             .col-xs-8.col-sm9
               b#bid-timer-message Waiting for next round...
             .col-xs-8.col-sm9
-              p#bid-timer 0:10
+              p#bid-timer 00:10
             .col-xs-4.col-sm9
               button#bid-button.btn.btn-primary.btn-lg.btn-block Bid
         hr
 
-        #messages
-
+        div#messages(style="overflow-y: scroll; max-height: 400px;")
         .push
   .footer
     .container-fluid
       .row
         .col-xs-8.col-sm-9
-          input(type="text" id="message-box" class="form-control input-lg" placeholder="Chat..." rows="3")
+          input#message-box(type="text" class="form-control input-lg" placeholder="Chat..." rows="3")
         .col-xs-4.col-sm-3
           button#send-message-btn.btn.btn-primary.btn-lg.btn-block Send
 
