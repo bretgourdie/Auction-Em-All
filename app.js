@@ -59,7 +59,11 @@ draftAndMinBid = data.split("\r\n");
 var serve = http.createServer(app);
 var io = require('socket.io')(serve);
 
-serve.listen(app.get('port'), function () {
+serve.listen(app.get('port'), function (err) {
+	if(err){
+		throw err;
+	}
+
     console.log("Express server listening on port " + app.get("port"));
 });
 
