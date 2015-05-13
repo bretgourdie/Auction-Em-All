@@ -455,6 +455,8 @@ function setBidButton(topBidUser){
     setTimeout(function () {
         $("#bid-button").prop("disabled", (points < bidToBeat) || !biddingTime || (username == topBidUser));
     }, 500);
+	
+	console.log("Setting Bid button to " + bidToBeat);
 
     $("#bid-button").text("Bid " + bidToBeat);
 }
@@ -480,7 +482,7 @@ function startRestTimer() {
 }
 
 function startBiddingTimer(){
-    biddingTimer = 60 * 2;
+    biddingTimer = 20;
     var minutes, seconds;
     biddingIntervalId = setInterval(function () {
         minutes = parseInt(biddingTimer / 60, 10);

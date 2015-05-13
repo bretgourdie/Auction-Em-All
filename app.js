@@ -319,6 +319,7 @@ function startTheBidding(){
         topBidUser = "";
         topBid = 0;
         setDrafterAndMinBid();
+		console.log("STARTTHEBIDDING: " + currentDrafter + " for " + minBid +  " points");
         io.sockets.emit("chat", "Bidding on " + currentDrafter + " begins in 10 seconds!", "");
         io.sockets.emit("startbid", currentDrafter, minBid);
     }
