@@ -56,10 +56,11 @@ console.log("DATARESULT:\n\n" + data + "\n\nDATAEND\n");
 
 draftAndMinBid = data.split("\r\n");
 
+console.log("ABOUT TO DO THE CREATION NOW");
+
 var serve = http.createServer(app);
 var io = require('socket.io')(serve);
 
-console.log("ABOUT TO DO THE LISTEN NOW");
 
 serve.listen(app.get('port'), function (err) {
 	if(err){
