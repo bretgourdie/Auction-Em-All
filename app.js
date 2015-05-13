@@ -122,7 +122,7 @@ io.on("connection", function (socket) {
         }
         else if (!biddingTime) {
             console.log("BID RESULT: " + user + " is trying to bid when it's not bidding time");
-            socket.emit("chat", user + ", it's not time to bid right now!", "");
+            socket.emit("chat", user + ", the server says it's not time to bid right now!", "");
         }
         else if(bid <= topBid){
             console.log("BID RESULT: " + user + ": not bid enough");
@@ -313,9 +313,9 @@ io.on("connection", function (socket) {
 function startTheBidding(){
     
     currentCheckedIn = 0;
+    biddingTime = true;
     
     if (draftAndMinBid.length > 0) {
-        biddingTime = true;
         topBidUser = "";
         topBid = 0;
         setDrafterAndMinBid();
