@@ -19,7 +19,7 @@ if (username == null || username == "") {
 }
 
 else {
-    var socket = io();
+    var socket = io.connect("http://nodejs-auctionemall.rhcloud.com:8000");
     
     socket.emit("register", username);
     
