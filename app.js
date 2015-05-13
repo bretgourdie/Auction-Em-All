@@ -54,7 +54,7 @@ var data = fs.readFileSync("./draft/ListOfPokes.csv", "ascii");
 
 console.log("DATARESULT:\n\n" + data + "\n\nDATAEND\n");
 
-draftAndMinBid = data.split("\r\n");
+draftAndMinBid = data.split("\n");
 
 console.log("ABOUT TO DO THE CREATION NOW");
 
