@@ -59,6 +59,8 @@ draftAndMinBid = data.split("\r\n");
 var serve = http.createServer(app);
 var io = require('socket.io')(serve);
 
+console.log("ABOUT TO DO THE LISTEN NOW");
+
 serve.listen(app.get('port'), function (err) {
 	if(err){
 		throw err;
