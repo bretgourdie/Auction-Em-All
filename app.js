@@ -114,15 +114,11 @@ io.on("connection", function (socket) {
     socket.on('bid', function (user, bid) {
         console.log("BID: " + user + ": " + bid);
 
-        if (biddingTime && bid > topBid) {
+        if (bid > topBid) {
             topBid = bid;
             topBidUser = user;
             console.log("BID RESULT: " + topBidUser + ": " + topBid);
             io.sockets.emit('bid', topBidUser, topBid);
-        }
-        else if (!biddingTime) {
-            console.log("BID RESULT: " + user + " is trying to bid when it's not bidding time");
-            socket.emit("chat", user + ", the server says it's not time to bid right now!", "");
         }
         else if(bid <= topBid){
             console.log("BID RESULT: " + user + ": not bid enough");
