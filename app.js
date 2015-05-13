@@ -63,9 +63,6 @@ var io = require('socket.io')(serve);
 
 
 serve.listen(app.get('port'), app.get('ipaddr'), function () {
-	if(err){
-		throw err;
-	}
 
     console.log("Express server listening on port " + app.get("port"));
 });
