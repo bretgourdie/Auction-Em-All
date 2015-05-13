@@ -276,7 +276,7 @@ io.on("connection", function (socket) {
         oldBids = [];
 
         data = fs.readFileSync("./draft/ListOfPokes.csv", "ascii");
-        draftAndMinBid = data.split("\r\n");
+        draftAndMinBid = data.split("\n");
     });
     
     socket.on("auto", function (newAuto) {

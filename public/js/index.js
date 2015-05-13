@@ -453,7 +453,7 @@ function setBidButton(topBidUser){
     $("#bid-button").prop("disabled", true);
 
     setTimeout(function () {
-        $("#bid-button").prop("disabled", (points < bidToBeat) || !biddingTime || (username == topBidUser));
+        $("#bid-button").prop("disabled", (points * 1 < bidToBeat * 1) || !biddingTime || (username == topBidUser));
     }, 500);
 	
 	console.log("Setting Bid button to " + bidToBeat);
