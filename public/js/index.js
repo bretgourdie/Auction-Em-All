@@ -80,12 +80,12 @@ else {
             + "' target='_blank'>" 
             + currentDrafter 
             + "</a>");
-			
-		$("#bid-message").text("Bidding on:");
+        
+        $("#bid-message").text("Bidding on:");
         
         bidToBeat = minBid;
         
-		allowBidding();
+        allowBidding();
         setBidButton();
         notifyMe(currentDrafter);
     });
@@ -106,7 +106,7 @@ else {
         
         resolveBidding();
         
-		biddingTime = false;
+        biddingTime = false;
     });
     
     socket.on("requestCheckin", function () {
@@ -428,10 +428,10 @@ function handleBid(){
 
 function addChat(boldPart, regularMsg){
     $("#messages").append($("<b>").text(boldPart)).append(regularMsg).append($("<p>"));
-	
-	if ($("#followCheck").is(":checked")) {
-		$("#messages").animate({ scrollTop: $("#messages")[0].scrollHeight }, 1000);
-	}
+
+    if ($("#followCheck").is(":checked")) {
+        $("#messages").animate({ scrollTop: $("#messages")[0].scrollHeight }, 1000);
+    }
 }
 
 function sayNotAuth(functionAttempted){
