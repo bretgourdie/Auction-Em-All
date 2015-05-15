@@ -18,23 +18,25 @@ block content
               b Team:
             .col-xs-8.col-sm9
               #my-team None
+			.col-xs-8.col-sm9
+              b Points:
+            .col-xs-8.col-sm9
+              p#num-points 0
         div#bid-div(hidden)
           hr
 
           .row
-            .col-xs-8.col-sm9
-              b Points:
-            .col-xs-8.col-sm9
-              p#num-points 0
             .col-xs-8.col-sm9
               b#bid-message Waiting to bid on:
             .col-xs-8.col-sm9
               p#bidding-on Gor-Don
           .row
             .col-xs-8.col-sm9
-              b#bid-timer-message Waiting for next round...
+              b#bid-timer-message(hidden) Waiting for next round...
             .col-xs-8.col-sm9
-              p#bid-timer 00:10
+              p#bid-timer(hidden) 00:10
+			.col-xs-8.col-sm9
+			  input#followCheck(type="checkbox" checked="checked") Follow chat conversation  
             .col-xs-4.col-sm9
               button#bid-button.btn.btn-primary.btn-lg.btn-block Bid
         hr

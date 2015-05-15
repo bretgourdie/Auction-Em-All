@@ -34,12 +34,12 @@ else {
             handleMessageBox();
         }
     });
-    // Clicking "Send" Button
+    // Clicking Send Button
     $('#send-message-btn').click(function () {
         handleMessageBox();
     });
     
-    // Clicking "Bid" Button
+    // Clicking Bid Button
     $("#bid-button").click(function () {
         handleBid();
     });
@@ -80,11 +80,13 @@ else {
             + "' target='_blank'>" 
             + currentDrafter 
             + "</a>");
+			
+		$("#bid-message").text("Bidding on:");
         
         bidToBeat = minBid;
         
+		allowBidding();
         setBidButton();
-        startRestTimer();
         notifyMe(currentDrafter);
     });
     
@@ -104,8 +106,7 @@ else {
         
         resolveBidding();
         
-
-        socket.emit("checkin");
+		biddingTime = false;
     });
     
     socket.on("requestCheckin", function () {
@@ -427,7 +428,10 @@ function handleBid(){
 
 function addChat(boldPart, regularMsg){
     $("#messages").append($("<b>").text(boldPart)).append(regularMsg).append($("<p>"));
-    $("#messages").animate({ scrollTop: $("#messages")[0].scrollHeight }, 1000);
+	
+	if ($("#followCheck").is(":checked")) {
+		$("#messages").animate({ scrollTop: $("#messages")[0].scrollHeight }, 1000);
+	}
 }
 
 function sayNotAuth(functionAttempted){
@@ -455,8 +459,6 @@ function setBidButton(topBidUser){
     setTimeout(function () {
         $("#bid-button").prop("disabled", (points * 1 < bidToBeat * 1) || !biddingTime || (username == topBidUser));
     }, 500);
-	
-	console.log("Setting Bid button to " + bidToBeat);
 
     $("#bid-button").text("Bid " + bidToBeat);
 }
@@ -505,9 +507,9 @@ function startBiddingTimer(){
 }
 
 function allowBidding(){
-    startBiddingTimer();
+    //startBiddingTimer();
     biddingTime = true;
-    clearInterval(restingIntervalId);
+    //clearInterval(restingIntervalId);
     $("#bid-message").text("Bidding on:");
     $("#bid-timer-message").text("Place your bids!");
     addChat("Start bidding on ", $("#bidding-on").html() + "!");
